@@ -5,8 +5,8 @@ MAIN_MENU() {
    
   if [[ -z $1 ]]
    then
-    echo -e "\nPlease provide an element as an argument.\n"   
-    EXIT
+    echo "Please provide an element as an argument."   
+    exit 0
   else
     # if a number
     if [[ $1 =~ ^[0-9]+$ ]]
@@ -15,12 +15,12 @@ MAIN_MENU() {
       ELEMENT_ATOMIC_NUMBER=$($PSQL "SELECT name, symbol, type, atomic_mass, melting_point_celsius, boiling_point_celsius from properties join types using(type_id) join elements using(atomic_number) where atomic_number = $1")
       if [[ -z $ELEMENT_ATOMIC_NUMBER ]]
         then
-          echo -e "\nI could not find that element in the database."
-          EXIT
+          echo "I could not find that element in the database."
+          exit 0
       else
       echo "$ELEMENT_ATOMIC_NUMBER" | while read NAME ELEMENT SYMBOL ELEMENT TYPE ELEMENT MASS ELEMENT MELTING ELEMENT BOILING
         do
-          echo "The element with the atomic number $1 is $NAME ($SYMBOL). It's a $TYPE, with a mass of $MASS amu. $NAME has a melting point of $MELTING celsius and a boiling point of $BOILING celsius."
+          echo "The element with atomic number $1 is $NAME ($SYMBOL). It's a $TYPE, with a mass of $MASS amu. $NAME has a melting point of $MELTING celsius and a boiling point of $BOILING celsius."
         done
       fi
     else    
@@ -30,12 +30,12 @@ MAIN_MENU() {
           ELEMENT_ATOMIC_NUMBER=$($PSQL "SELECT name, symbol, type, atomic_mass, melting_point_celsius, boiling_point_celsius, elements.atomic_number from properties join types using(type_id) join elements using(atomic_number) where name = '$1'")
         if [[ -z $ELEMENT_ATOMIC_NUMBER ]]
         then
-          echo -e "\nI could not find that element in the database."
-          EXIT
+          echo "I could not find that element in the database."
+          exit 0
         else
           echo "$ELEMENT_ATOMIC_NUMBER" | while read NAME ELEMENT SYMBOL ELEMENT TYPE ELEMENT MASS ELEMENT MELTING ELEMENT BOILING ELEMENT NUMBER
             do
-              echo "The element with the atomic number $NUMBER is $NAME ($SYMBOL). It's a $TYPE, with a mass of $MASS amu. $NAME has a melting point of $MELTING celsius and a boiling point of $BOILING celsius."
+              echo "The element with atomic number $NUMBER is $NAME ($SYMBOL). It's a $TYPE, with a mass of $MASS amu. $NAME has a melting point of $MELTING celsius and a boiling point of $BOILING celsius."
             done
          fi
       else
@@ -43,21 +43,17 @@ MAIN_MENU() {
           ELEMENT_ATOMIC_NUMBER=$($PSQL "SELECT name, symbol, type, atomic_mass, melting_point_celsius, boiling_point_celsius, elements.atomic_number from properties join types using(type_id) join elements using(atomic_number) where symbol = '$1'")
         if [[ -z $ELEMENT_ATOMIC_NUMBER ]]
           then
-            echo -e "\nI could not find that element in the database."
-            EXIT
+            echo "I could not find that element in the database."
+            exit 0
         else
           echo "$ELEMENT_ATOMIC_NUMBER" | while read NAME ELEMENT SYMBOL ELEMENT TYPE ELEMENT MASS ELEMENT MELTING ELEMENT BOILING ELEMENT NUMBER
             do
-              echo "The element with the atomic number $NUMBER is $NAME ($SYMBOL). It's a $TYPE, with a mass of $MASS amu. $NAME has a melting point of $MELTING celsius and a boiling point of $BOILING celsius."
+              echo "The element with atomic number $NUMBER is $NAME ($SYMBOL). It's a $TYPE, with a mass of $MASS amu. $NAME has a melting point of $MELTING celsius and a boiling point of $BOILING celsius."
             done
         fi
       fi    
     fi
   fi 
-}
-
-EXIT() {
-  echo -e ""
 }
 
 MAIN_MENU $1
